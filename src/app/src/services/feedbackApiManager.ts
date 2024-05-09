@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { FeedbackItem } from '../models/feedbackItem';
 
-const _BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const _BASE_URL = process.env.REACT_APP_API_URL || '';
 
 export const getFeedbackIds = async (): Promise<string[]> => {
     const response = await axios.get(`${_BASE_URL}/api/feedback/ids`);

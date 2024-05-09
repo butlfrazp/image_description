@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app:
+    image: feedbackacrpb.azurecr.io/nprd/image_description_app:0.0.1
+    ports:
+      - "8000:80"
+  api:
+    image: feedbackacrpb.azurecr.io/nprd/image_description_api:0.0.1
+    ports:
+      - "3001:3001"
