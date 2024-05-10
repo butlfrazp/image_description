@@ -12,7 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const router = createBrowserRouter([
   {
-    path: '/image_feedback/feedback',
+    path: '/image-feedback/feedback',
     element: <App />
   }
 ]);
