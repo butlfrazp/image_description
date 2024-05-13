@@ -105,6 +105,11 @@ function App() {
                 placeholder="GPT Description"
                 disabled
                 value={feedbackItem.description}
+                sx={{
+                  '& .MuiInputBase-root.Mui-disabled': {
+                    color: '#414141'
+                  }
+                }}
               />
             </FormControl>
             <Controller
