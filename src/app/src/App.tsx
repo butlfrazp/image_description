@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   FormHelperText,
   FormLabel,
+  Link,
   Radio,
   RadioGroup
 } from '@mui/material';
@@ -92,6 +93,18 @@ function App() {
               <FormLabel>Image</FormLabel>
               <img src={feedbackItem.imageData} alt="Image for gpt analysis" />
             </FormControl>
+            <div style={{ marginTop: 10 }}>
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={feedbackItem.imageUrl}
+                sx={{
+                  textAlign: 'center',
+                }}
+              >
+                {feedbackItem.imageUrl}
+              </Link>
+            </div>
             <FormControl sx={{
               width: '100%',
               height: '100%',
@@ -106,9 +119,9 @@ function App() {
                 disabled
                 value={feedbackItem.description}
                 sx={{
-                  '& .MuiInputBase-root.Mui-disabled': {
-                    color: '#414141'
-                  }
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#4a4a4a",
+                  },
                 }}
               />
             </FormControl>
