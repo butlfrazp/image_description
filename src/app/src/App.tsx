@@ -90,7 +90,7 @@ function App() {
               mt: 2,
             }}>
               <FormLabel>Image</FormLabel>
-              <img src={feedbackItem.imageUrl} alt="Image for gpt analysis" />
+              <img src={feedbackItem.imageData} alt="Image for gpt analysis" />
             </FormControl>
             <FormControl sx={{
               width: '100%',

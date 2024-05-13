@@ -10,4 +10,5 @@ export interface FeedbackItem {
     description: string;
     rating: Rating;
     feedback: string;
+    imageData: string;
 }
