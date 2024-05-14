@@ -17,7 +17,9 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { v4 as uuidv4 } from 'uuid';
+import { useParams } from 'react-router-dom';
 
+import { NotFound } from './components/notFound';
 import { useFeedback } from './hooks/useFeedback';
 import { Rating } from './models/feedbackItem';
 
@@ -38,6 +40,12 @@ const schema = yup.object().shape({
 const sessionId = uuidv4();
 
 function App() {
+  const { version } = useParams<{ version: string }>();
+
+  if (!version) {
+    throw new Error("No version provided.");
+  }
+
   const { handleSubmit, control, reset } = useForm<FeedbackForm>({
     defaultValues: {
       feedback: '',
@@ -46,7 +54,7 @@ function App() {
     resolver: yupResolver(schema),
   });
 
-  const { feedbackIds, feedbackItem, loading, submitFeedback, getFeedbackItem, skipFeedbackItem } = useFeedback();
+  const { feedbackIds, feedbackItem, loading, submitFeedback, skipFeedbackItem, versionExists } = useFeedback(version);
 
   const onSubmit = async (data: FeedbackForm) => {
     if (!feedbackItem) {
@@ -71,10 +79,14 @@ function App() {
     );
   }
 
+  if (versionExists === false) {
+    return <NotFound />;
+  }
+
   return (
     <div className="App">
       {(!loading && feedbackIds?.length === 0) && <h1>No feedback items available</h1>}
-      {(loading || !feedbackItem) && (feedbackIds ?? []).length > 0 && renderLoading()}
+      {(versionExists === undefined || ((loading || !feedbackItem) && (feedbackIds ?? []).length > 0)) && renderLoading()}
       {!loading && feedbackItem && (feedbackIds ?? []).length > 0 && (
         <Container>
           <Box component="form" sx={{

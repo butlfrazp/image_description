@@ -3,16 +3,22 @@ import { FeedbackItem, Rating } from "../models/feedbackItem";
 import * as feedbackApiManager from "../services/feedbackApiManager";
 
 
-export const useFeedback = () => {
+export const useFeedback = (version: string) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackItem, setFeedbackItem] = useState<FeedbackItem | undefined>();
     const [feedbackIds, setFeedbackIds] = useState<string[] | undefined>();
+    const [versionExists, setVersionExists] = useState<boolean | undefined>(undefined);
 
     useEffect(() => {
         console.log("Fetching feedback ids...");
         (async () => {
-            const ids = await getFeedbackIds();
-            setFeedbackIds(ids);
+            try {
+                const ids = await getFeedbackIds();
+                setFeedbackIds(ids);
+                setVersionExists(true);
+            } catch (err) {
+                setVersionExists(false);
+            }
         })();
     }, []);
 
@@ -23,7 +29,7 @@ export const useFeedback = () => {
     }, [feedbackItem, feedbackIds]);
 
     const getFeedbackIds = async () => {
-        const ids = await feedbackApiManager.getFeedbackIds();
+        const ids = await feedbackApiManager.getFeedbackIds(version);
         return ids;
     }
 
@@ -41,7 +47,7 @@ export const useFeedback = () => {
 
         let data: FeedbackItem;
         try {
-            data = await feedbackApiManager.getFeedback(randomId);
+            data = await feedbackApiManager.getFeedback(version, randomId);
         } finally {
             setLoading(false);
         }
@@ -56,7 +62,7 @@ export const useFeedback = () => {
 
         setLoading(true);
         try {
-            await feedbackApiManager.uploadFeedback(sessionId, feedbackItem.id, feedback, rating);
+            await feedbackApiManager.uploadFeedback(version, sessionId, feedbackItem.id, feedback, rating);
         } finally {
             setLoading(false);
         }
@@ -70,5 +76,5 @@ export const useFeedback = () => {
         setFeedbackItem(undefined);
     }
 
-    return { feedbackIds, loading, feedbackItem, getFeedbackItem, submitFeedback, skipFeedbackItem };
+    return { feedbackIds, loading, feedbackItem, getFeedbackItem, submitFeedback, skipFeedbackItem, versionExists };
 }
