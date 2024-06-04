@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage": "/v1/app",
   "scripts": {
     "start": "npx ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"

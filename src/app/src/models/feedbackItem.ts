@@ -1,8 +1,4 @@
-export enum Rating {
-    UNKNOWN = 'UNKNOWN',
-    THUMBS_UP = 'THUMBS_UP',
-    THUMBS_DOWN = 'THUMBS_DOWN',
-}
+import { Rating } from './enums/rating';
 
 export interface FeedbackItem {
     id: string;

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { FeedbackItem, Rating } from "../models/feedbackItem";
+import { useEffect, useMemo, useState } from "react";
+import { Rating } from "../models/enums/rating";
+import { FeedbackItem } from "../models/feedbackItem";
 import * as feedbackApiManager from "../services/feedbackApiManager";
 
 
@@ -76,5 +77,10 @@ export const useFeedback = (version: string) => {
         setFeedbackItem(undefined);
     }
 
-    return { feedbackIds, loading, feedbackItem, getFeedbackItem, submitFeedback, skipFeedbackItem, versionExists };
+    const isLoading = useMemo(
+        () => (versionExists === undefined || ((loading || !feedbackItem) && (feedbackIds ?? []).length > 0)),
+        [versionExists, loading, feedbackItem, feedbackIds]
+    );
+
+    return { feedbackIds, isLoading, feedbackItem, getFeedbackItem, submitFeedback, skipFeedbackItem, versionExists };
 }

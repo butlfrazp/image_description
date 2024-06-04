@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { FeedbackItem } from "../models/feedbackItem";
-import { getFeedbackIds, getFeedbackItem, submitFeedback } from "../controllers/feedback";
+import { GptScoreFeedbackItem } from "../models/GptScoreFeedbackItem";
+import { getGptScoreIds, getGptScoreFeedbackItem, submitGptScoreFeedback } from "../controllers/gpt_score_feedback";
 import { NotFoundError } from "../models/notFoundError";
 
 const router = Router();
@@ -9,7 +9,7 @@ router.get("/:version/documents", async (req, res) => {
     const { version } = req.params;
 
     try {
-        const feedbackIds = await getFeedbackIds(version);
+        const feedbackIds = await getGptScoreIds(version);
         res.json(feedbackIds);
     } catch (err) {
         if (err instanceof NotFoundError) {
@@ -24,9 +24,9 @@ router.get("/:version/documents", async (req, res) => {
 router.get('/:version/documents/:id', async (req, res) => {
     const { version, id } = req.params;
 
-    let feedbackItem: FeedbackItem | undefined;
+    let feedbackItem: GptScoreFeedbackItem | undefined;
     try {
-        feedbackItem = await getFeedbackItem(version, id);
+        feedbackItem = await getGptScoreFeedbackItem(version, id);
     } catch (err) {
         console.error(err);
         res.json({ message: "There was an error fetching the feedback item." }).sendStatus(400);
@@ -42,7 +42,7 @@ router.get('/:version/documents/:id', async (req, res) => {
 });
 
 router.post('/:version/documents/:id', async (req, res) => {
-    const { feedback, rating } = req.body;
+    const { feedback, score }: { feedback: string, score: number } = req.body;
     const { version, id } = req.params;
     const sessionId = req.headers['session-id'] as string;
 
@@ -53,7 +53,7 @@ router.post('/:version/documents/:id', async (req, res) => {
 
     console.log(`Submitting feedback for ${id}`)
     try {
-        await submitFeedback(version, sessionId, { id, feedback, rating });
+        await submitGptScoreFeedback(version, sessionId, { id, feedback, score });
     } catch (err) {
         if (err instanceof NotFoundError) {
             res.sendStatus(404);
@@ -61,10 +61,10 @@ router.post('/:version/documents/:id', async (req, res) => {
         }
 
         res.sendStatus(500);
-        return;
     }
-
-    console.log(`Feedback submitted for ${id}`);
+    console.log(`Feedback submitted for ${id}`)
+    res.sendStatus(200);
 });
+
 
 export default router;
