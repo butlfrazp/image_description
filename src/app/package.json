@@ -2,7 +2,7 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/image-feedback/feedback/image/test",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -29,6 +29,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:image": "set PUBLIC_URL=/image-feedback/feedback/image/test&& set BUILD_PATH=build-image&& react-scripts build",
+    "build:gpt-score": "set PUBLIC_URL=/image-feedback/feedback/gpt-score/test&& set BUILD_PATH=./build-gpt-score&& react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
