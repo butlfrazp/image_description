@@ -5,11 +5,11 @@ import { GptScoreFeedback } from "./pages/gpt-score-feedback";
 
 export const router = createBrowserRouter([
   {
-    path: '/image-feedback/feedback/:version',
+    path: '/image-feedback/feedback/image/:version',
     element: <ImageDescriptionFeedback />
   },
   {
-    path: '/image-feedback/gpt-feedback/:version',
+    path: '/image-feedback/feedback/gpt-score/:version',
     element: <GptScoreFeedback />
   }
 ]);

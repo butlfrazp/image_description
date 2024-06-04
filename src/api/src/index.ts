@@ -17,8 +17,8 @@ const port = process.env.PORT || 3001;
 app.use(express.json());
 app.use(cors());
 
-app.use("/image-feedback/feedback", feedbackRouter);
-app.use("/image-feedback/gpt-score-feedback", gptScoreFeedbackRouter);
+app.use("/image-feedback/feedback/image", feedbackRouter);
+app.use("/image-feedback/feedback/gpt-score", gptScoreFeedbackRouter);
 
 if (process.env.NODE_ENV?.toLowerCase() === "production") {
   app.use(express.static(_BUILD_PATH));
