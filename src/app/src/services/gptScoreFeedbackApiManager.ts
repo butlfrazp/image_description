@@ -20,5 +20,5 @@ export const uploadFeedback = async (version: string, sessionId: string, id: str
         "session-id": sessionId,
     };
 
-    await axios.post(`${_BASE_URL}/image-feedback/feedback/gpt-score/${version}/documents/${id}`, { feedback, score }, { headers: headers });
+    await axios.post(`${_BASE_URL}/image-feedback/feedback/gpt-score/${version}/documents/${id}/feedback`, { feedback, score }, { headers: headers });
 };
