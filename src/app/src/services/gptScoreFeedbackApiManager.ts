@@ -15,10 +15,10 @@ export const getFeedback = async (version: string, id: string) => {
     return response.data as GptScoreFeedbackItem;
 };
 
-export const uploadFeedback = async (version: string, sessionId: string, id: string, feedback: string, score: number) => {
+export const uploadFeedback = async (version: string, sessionId: string, id: string, feedback: string, note: string, score: number) => {
     const headers = {
         "session-id": sessionId,
     };
 
-    await axios.post(`${_BASE_URL}/image-feedback/feedback/gpt-score/${version}/documents/${id}/feedback`, { feedback, score }, { headers: headers });
+    await axios.post(`${_BASE_URL}/image-feedback/feedback/gpt-score/${version}/documents/${id}/feedback`, { feedback, note, score }, { headers: headers });
 };

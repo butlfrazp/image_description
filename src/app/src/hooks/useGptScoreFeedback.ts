@@ -59,14 +59,14 @@ export const useGptScoreFeedback = (version: string) => {
         setGptScoreFeedbackItem(data);
     }
 
-    const submitFeedback = async (sessionId: string, feedback: string, score: number) => {
+    const submitFeedback = async (sessionId: string, feedback: string, note: string, score: number) => {
         if (!gptScoreFeedbackItem) {
             return;
         }
 
         setLoading(true);
         try {
-            await gptScoreFeedbackApiManager.uploadFeedback(version, sessionId, gptScoreFeedbackItem.id, feedback, score);
+            await gptScoreFeedbackApiManager.uploadFeedback(version, sessionId, gptScoreFeedbackItem.id, feedback, note, score);
         } finally {
             setLoading(false);
         }

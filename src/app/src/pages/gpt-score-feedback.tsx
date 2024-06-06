@@ -3,6 +3,7 @@ import {
   Button,
   Box,
   Container,
+
   TextField,
   FormControl,
   FormControlLabel,
@@ -82,7 +83,7 @@ export const GptScoreFeedback = () => {
       return;
     }
 
-    await submitFeedback(sessionId, data.feedbackOptions?.join(', ') ?? "", data.score);
+    await submitFeedback(sessionId, data.feedbackOptions?.join(', ') ?? "", data.note ?? "", data.score);
     reset();
   }
 
