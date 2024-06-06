@@ -12,8 +12,11 @@ import {
   Radio,
   RadioGroup,
   Autocomplete,
-  Typography
+  Typography,
+  IconButton,
+  Tooltip
 } from '@mui/material';
+import { InfoOutlined } from '@mui/icons-material';
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -184,7 +187,10 @@ export const GptScoreFeedback = () => {
                       }}
                       error={!!error}
                     >
-                        <FormLabel id="gpt-score">Score</FormLabel>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FormLabel id="gpt-score">Score</FormLabel>
+                          <Tooltip title="Score from 1 to 5 where 1 is the lowest score and 5 is the highest score. Rating is based on if the answer and images are correct, accurate, and factual."><IconButton><InfoOutlined /></IconButton></Tooltip>
+                        </div>
                         <RadioGroup
                             row
                             aria-labelledby="gpt-score"
