@@ -189,7 +189,7 @@ export const GptScoreFeedback = () => {
                     >
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <FormLabel id="gpt-score">Score</FormLabel>
-                          <Tooltip title="Score from 1 to 5 where 1 is the lowest score and 5 is the highest score. Rating is based on if the answer and images are correct, accurate, and factual."><IconButton><InfoOutlined /></IconButton></Tooltip>
+                          <Tooltip title="Score from 1 to 5 where 1 is the lowest score and 5 is the highest score. The score is based on if the answer and images are correct, accurate, and factual."><IconButton><InfoOutlined /></IconButton></Tooltip>
                         </div>
                         <RadioGroup
                             row

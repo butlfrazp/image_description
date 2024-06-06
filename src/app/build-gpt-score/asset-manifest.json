@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/image-feedback/feedback/gpt-score/test/static/css/main.31d6cfe0.css",
-    "main.js": "/image-feedback/feedback/gpt-score/test/static/js/main.e427f13b.js",
+    "main.js": "/image-feedback/feedback/gpt-score/test/static/js/main.9593f716.js",
     "static/js/453.5565870f.chunk.js": "/image-feedback/feedback/gpt-score/test/static/js/453.5565870f.chunk.js",
     "index.html": "/image-feedback/feedback/gpt-score/test/index.html",
-    "main.e427f13b.js.map": "/image-feedback/feedback/gpt-score/test/static/js/main.e427f13b.js.map",
+    "main.9593f716.js.map": "/image-feedback/feedback/gpt-score/test/static/js/main.9593f716.js.map",
     "453.5565870f.chunk.js.map": "/image-feedback/feedback/gpt-score/test/static/js/453.5565870f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.e427f13b.js"
+    "static/js/main.9593f716.js"
   ]
 }
