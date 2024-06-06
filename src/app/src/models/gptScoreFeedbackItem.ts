@@ -8,6 +8,7 @@ export interface GptScoreFeedbackItem {
     textLink: string[];
     imageLinks: string[];
     generatedAnswer: string;
+    generatedImageUrls: string[];
     gptScore: number;
     gptScoreJustification: string;
     rating: Rating;

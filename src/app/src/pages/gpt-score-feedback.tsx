@@ -3,15 +3,15 @@ import {
   Button,
   Box,
   Container,
-  Chip,
-  Divider,
   TextField,
   FormControl,
   FormControlLabel,
   FormHelperText,
   FormLabel,
   Radio,
-  RadioGroup
+  RadioGroup,
+  Autocomplete,
+  Typography
 } from '@mui/material';
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,22 +21,33 @@ import { useParams } from 'react-router-dom';
 
 import { NotFound } from '../components/notFound';
 import { useGptScoreFeedback } from '../hooks/useGptScoreFeedback';
-import { Rating } from '../models/enums/rating';
 import { Spinner } from '../components/spinner';
 import { ChipGrid } from '../components/chip-grid';
 
+const _FEEDBACK_OPTIONS = [
+    "The answer is incorrect.",
+    "The answer is partially correct.",
+    "The answer is correct.",
+    "All of the images are irrelevant.",
+    "Some of the images are irrelevant.",
+    "All of the images are relevant.",
+    "Too much information.",
+    "Not enough information.",
+]
 
 type FeedbackForm = {
-  feedback?: string | undefined;
+  note?: string | undefined;
+  feedbackOptions?: (string | undefined)[] | undefined;
   score: number;
 }
 
 const schema = yup.object().shape({
   score: yup.number().required().min(1).max(5),
-  feedback: yup.string().when('score', {
+  feedbackOptions: yup.array().of(yup.string()).when('score', {
     is: (value: number) => value <= 3,
-    then: () => yup.string().required().min(10),
+    then: () => yup.array().of(yup.string()).required().min(1),
   }),
+  note: yup.string(),
 });
 
 const sessionId = uuidv4();
@@ -51,7 +62,8 @@ export const GptScoreFeedback = () => {
   const { handleSubmit, control, reset } = useForm<FeedbackForm>({
     defaultValues: {
       score: undefined,
-      feedback: undefined
+      feedbackOptions: [],
+      note: undefined
     },
     resolver: yupResolver(schema),
   });
@@ -70,7 +82,7 @@ export const GptScoreFeedback = () => {
       return;
     }
 
-    await submitFeedback(sessionId, data.feedback ?? "", data.score);
+    await submitFeedback(sessionId, data.feedbackOptions?.join(', ') ?? "", data.score);
     reset();
   }
 
@@ -90,16 +102,16 @@ export const GptScoreFeedback = () => {
     <div>
         <Container>
           <Box component="form" sx={{
-              mt: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            mt: 2,
+            mb: 30
+          }}>
             <h1>Feedback</h1>
 
             <FormControl sx={{
               width: '100%',
-              height: '100%',
               maxWidth: '600px',
               mt: 2,
             }}>
@@ -119,14 +131,13 @@ export const GptScoreFeedback = () => {
 
             <FormControl sx={{
               width: '100%',
-              height: '100%',
               maxWidth: '600px',
               mt: 2,
             }}>
               <FormLabel>Answer</FormLabel>
               <TextField
                 multiline
-                rows={4}
+                rows={8}
                 disabled
                 value={gptScoreFeedbackItem?.generatedAnswer}
                 sx={{
@@ -137,6 +148,27 @@ export const GptScoreFeedback = () => {
               />
             </FormControl>
 
+            <Box sx={{
+                width: '100%',
+                maxWidth: '600px',
+                mt: 2
+            }}>
+                <FormLabel>Image URLs</FormLabel>
+                <Box
+                    sx={{
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: 125,
+                    overflowX: "scroll",
+                    overflowY: "scroll",
+                    // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+                    }}
+                >
+                    <ChipGrid urls={gptScoreFeedbackItem?.imageLinks ?? []} />
+                </Box>
+            </Box>
+
             <Controller
                 name="score"
                 control={control}
@@ -146,7 +178,6 @@ export const GptScoreFeedback = () => {
                 }) => (
                     <FormControl sx={{
                         width: '100%',
-                        height: '100%',
                         maxWidth: '600px',
                         mt: 2,
                       }}
@@ -173,39 +204,67 @@ export const GptScoreFeedback = () => {
                     </FormControl>
             )} />
 
-            <Divider sx={{ width: '100%', maxWidth: '600px', mt: 2 }}>
-                <Chip label="Required if Score <= 3" size="small" />
-            </Divider>
-
-            <FormControl sx={{
-              width: '100%',
-              height: '100%',
-              maxWidth: '600px',
-              mt: 2,
-            }}>
-              <FormLabel>Feedback</FormLabel>
-              <Controller
-                name="feedback"
+            <Controller
+                name="feedbackOptions"
                 control={control}
                 render={({
-                  field: { onChange, value },
-                  fieldState: { error },
+                    field: { onChange, value },
+                    fieldState: { error },
                 }) => (
-                  <TextField
-                    multiline
-                    rows={4}
-                    helperText={error ? error.message : null}
-                    size="small"
-                    error={!!error}
-                    onChange={onChange}
-                    value={value}
-                    fullWidth
-                    variant="outlined"
-                    placeholder="This description gives an accurate representation of the image."
-                  />
+                    <FormControl sx={{
+                            width: '100%',
+                            maxWidth: '600px',
+                            mt: 2,
+                            position: 'relative'
+                        }}>
+                        <FormLabel>Feedback <Typography variant='caption' component='span'>(Required if Score &#8804; 3)</Typography></FormLabel>
+                        <Autocomplete
+                            multiple
+                            disableCloseOnSelect
+                            options={_FEEDBACK_OPTIONS}
+                            renderInput={(params) => (<TextField
+                              {...params}
+                              error={!!error}
+                              helperText={error?.message}
+                              variant="outlined"
+                            />)}
+                            onChange={(_, data) => onChange(data)}
+                            value={value}
+                            fullWidth
+                        />
+                    </FormControl>
                 )}
-              />
-            </FormControl>
+            />
+
+            <Controller
+                name="note"
+                control={control}
+                render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                }) => (
+                    <FormControl sx={{
+                        width: '100%',
+                        maxWidth: '600px',
+                        mt: 2,
+                        display: 'flex',
+                    }}>
+                        <FormLabel>Note</FormLabel>
+                        <TextField
+                            multiline
+                            rows={4}
+                            helperText={error ? error.message : null}
+                            size="small"
+                            error={!!error}
+                            onChange={onChange}
+                            value={value}
+                            fullWidth
+                            variant="outlined"
+                            placeholder="This description gives an accurate representation of the image."
+                        />
+                    </FormControl>
+                )}
+            />
 
             <Box sx={{
               display: 'flex',
