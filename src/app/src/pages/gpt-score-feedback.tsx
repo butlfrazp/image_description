@@ -17,6 +17,7 @@ import {
   Tooltip
 } from '@mui/material';
 import { InfoOutlined } from '@mui/icons-material';
+import { red } from '@mui/material/colors';
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -31,12 +32,11 @@ import { ChipGrid } from '../components/chip-grid';
 const _FEEDBACK_OPTIONS = [
     "The answer is incorrect.",
     "The answer is partially correct.",
-    "The answer is correct.",
     "All of the images are irrelevant.",
     "Some of the images are irrelevant.",
-    "All of the images are relevant.",
     "Too much information.",
     "Not enough information.",
+    "Other"
 ]
 
 type FeedbackForm = {
@@ -51,12 +51,19 @@ const schema = yup.object().shape({
     is: (value: number) => value <= 3,
     then: () => yup.array().of(yup.string()).required().min(1),
   }),
-  note: yup.string(),
+  note: yup.string().when('feedbackOptions', {
+    is: (value: string[]) => value.includes("Other"),
+    then: () => yup.string().required().min(10),
+  }),
 });
 
 const sessionId = uuidv4();
 
 export const GptScoreFeedback = () => {
+  React.useEffect(() => {
+    document.title = "Correctness Feedback";
+  }, [])
+
   const { version } = useParams<{ version: string }>();
 
   if (!version) {
@@ -112,7 +119,7 @@ export const GptScoreFeedback = () => {
             mt: 2,
             mb: 30
           }}>
-            <h1>Feedback</h1>
+            <Typography variant="h5" component="h2">Correctness Score Feedback</Typography>
 
             <FormControl sx={{
               width: '100%',
@@ -188,7 +195,7 @@ export const GptScoreFeedback = () => {
                       error={!!error}
                     >
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <FormLabel id="gpt-score">Score</FormLabel>
+                          <FormLabel id="gpt-score">Score <Typography variant='caption' component='span'>(Required)</Typography></FormLabel>
                           <Tooltip title="Score from 1 to 5 where 1 is the lowest score and 5 is the highest score. The score is based on if the answer and images are correct, accurate, and factual."><IconButton><InfoOutlined /></IconButton></Tooltip>
                         </div>
                         <RadioGroup
@@ -256,7 +263,7 @@ export const GptScoreFeedback = () => {
                         mt: 2,
                         display: 'flex',
                     }}>
-                        <FormLabel>Note</FormLabel>
+                        <FormLabel>Note <Typography variant='caption' component='span'>(Required if Feedback contains "Other")</Typography></FormLabel>
                         <TextField
                             multiline
                             rows={4}
@@ -267,7 +274,7 @@ export const GptScoreFeedback = () => {
                             value={value}
                             fullWidth
                             variant="outlined"
-                            placeholder="This description gives an accurate representation of the image."
+                            placeholder="Add additional notes on the score feedback here."
                         />
                     </FormControl>
                 )}
