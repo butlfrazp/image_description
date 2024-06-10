@@ -234,6 +234,7 @@ export const GptScoreFeedback = () => {
                         <FormLabel>Feedback <Typography variant='caption' component='span'>(Required if Score &#8804; 3)</Typography></FormLabel>
                         <Autocomplete
                             multiple
+                            disablePortal
                             disableCloseOnSelect
                             options={_FEEDBACK_OPTIONS}
                             renderInput={(params) => (<TextField
